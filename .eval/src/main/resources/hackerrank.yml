@@ -1,0 +1,48 @@
+version: 1.0
+configuration:
+  has_webserver: true
+  readonly_paths:
+    - .eval/*
+  scoring:
+    command: .eval/score.sh
+    files:
+      - .eval/target/surefire-reports/TEST-com.hackerrank.eval.BestPracticeTests.xml
+      - .eval/target/surefire-reports/TEST-com.hackerrank.eval.FunctionalTests.xml
+      - .eval/target/surefire-reports/TEST-com.hackerrank.eval.TestCoverageTests.xml
+    test_total_score: 160 #Max points that can be obtained
+    testcase_weights:
+      # The weights must sum up to a total of 1
+      # Scoring guidance:
+      # 1 point = 0.006
+      # 5 points = 0.03125
+      # 10 points = 0.0625
+      # 20 points = 0.125
+
+      # Best practices(20 marks)
+      statusCode404WhenNonExistentScanRequested: 0.03125
+      statusCodeSuccessWhenDeletingScan: 0.03125
+      statusCode404WhenTryingToDeleteNonExistentScan: 0.03125
+      statusCode400WhenSortByInvalid: 0.03125
+
+      # Functional tests(90 marks)
+      whenScanRequestedThenCorrectOneIsReturned: 0.125
+      whenRequestingDeletionScanIsSoftDeleted: 0.125
+      whenRequestingADeletedScanThen404IsReturned: 0.0625
+      deletedScanNotPresentWhenRequestingAllScan: 0.0625
+      whenRequestingVulnerabilitiesSortedThenExpectRightOrder: 0.125
+      whenRequestingVulnerabilitiesSortedWithNoVulnerabilitiesExpectEmptyList: 0.0625
+
+      #Writing 5 tests(40 marks)
+      wroteAtLeastXNumberOfTests{int}[1]: 0.0625
+      wroteAtLeastXNumberOfTests{int}[2]: 0.0625
+      wroteAtLeastXNumberOfTests{int}[3]: 0.03125
+      wroteAtLeastXNumberOfTests{int}[4]: 0.03125
+      wroteAtLeastXNumberOfTests{int}[5]: 0.125
+
+  ide_config:
+    default_open_files:
+      - src/main/java/com/hackerrank/api/Application.java
+    project_menu:
+      run: mvn clean spring-boot:run
+      install: mvn clean install
+      test: mvn clean test
